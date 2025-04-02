@@ -1,22 +1,23 @@
 package com.elingenio.Proyecto.Modelo;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
-@Data
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
 @Entity
+@Data
 @Table(name = "proveedores")
-public class Proveedor {
+public class Proveedor  implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long idProveedor;
 
     private String nombre;
-    private String RUT;
-    private String direccion;
+    private String correoElectronico;
     private String telefono;
+    private String direccion;
+
+    private LocalDateTime creadoEn;
+    private LocalDateTime actualizadoEn;
 }

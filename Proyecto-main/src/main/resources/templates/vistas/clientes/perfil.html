@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil del Cliente - Ferretería Online</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" th:href="@{/cliente/dashboard}">Dashboard del Cliente</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/cliente/perfil}">Perfil</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/cliente/ordenes}">Órdenes</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/cliente/productos}">Productos</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/cliente/carrito}">Carrito</a></li>
+            </ul>
+            <a class="btn btn-outline-light" th:href="@{/logout}">Cerrar Sesión</a>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        <h1>Tu Perfil</h1>
+        <form th:action="@{/cliente/perfil}" th:object="${cliente}" method="post">
+            <input type="hidden" th:field="*{idCliente}" />
+            <input type="hidden" th:field="*{correoElectronico}" />
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre:</label>
+                <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required="required" />
+            </div>
+            <div class="mb-3">
+                <label for="telefono" class="form-label">Teléfono:</label>
+                <input type="text" id="telefono" th:field="*{telefono}" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="direccion" class="form-label">Dirección:</label>
+                <input type="text" id="direccion" th:field="*{direccion}" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-success">Actualizar Perfil</button>
+        </form>
+    </div>
+    <footer class="text-center mt-4">
+        <p>© 2025 Ferretería Online</p>
+    </footer>
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Carrito de Compras - Ferretería Online</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" th:href="@{/cliente/dashboard}">Dashboard del Cliente</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/cliente/perfil}">Perfil</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/cliente/ordenes}">Órdenes</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/cliente/productos}">Productos</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/cliente/carrito}">Carrito</a></li>
+            </ul>
+            <a class="btn btn-outline-light" th:href="@{/logout}">Cerrar Sesión</a>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        <h1>Carrito de Compras</h1>
+        <div th:if="${carrito == null or carrito.isEmpty()}">
+            <p>Tu carrito está vacío.</p>
+        </div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <table class="table table-striped" th:unless="${carrito == null or carrito.isEmpty()}">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${carrito}" th:if="${item != null}">
+                    <td th:text="${item.producto?.nombre ?: 'Producto no disponible'}"></td>
+                    <td th:text="${item.cantidad}"></td>
+                    <td th:text="${item.precio}"></td>
+                    <td th:text="${item.cantidad * item.precio.doubleValue()}"></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3"><strong>Total:</strong></td>
+                    <td th:text="${totalCarrito != null ? totalCarrito : '0.00'}"></td>
+                </tr>
+            </tfoot>
+        </table>
+        <form th:action="@{/cliente/carrito/comprar}" method="post" th:unless="${carrito == null or carrito.isEmpty()}">
+            <button type="submit" class="btn btn-success">Realizar Compra</button>
+        </form>
+        <a th:href="@{/cliente/productos}" class="btn btn-primary mt-2">Seguir Comprando</a>
+    </div>
+    <footer class="text-center mt-4">
+        <p>© 2025 Ferretería Online</p>
+    </footer>
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

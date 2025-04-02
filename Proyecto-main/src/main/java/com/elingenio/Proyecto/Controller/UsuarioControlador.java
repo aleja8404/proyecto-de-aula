@@ -4,6 +4,9 @@ import com.elingenio.Proyecto.Modelo.Usuario;
 import com.elingenio.Proyecto.Services.UsuarioServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,53 +20,71 @@ public class UsuarioControlador {
     @Autowired
     private UsuarioServicio usuarioServicio;
 
-    // Mostrar todos los usuarios y el formulario de creación/edición
+    // Mostrar todos los usuarios con paginación y búsqueda
     @GetMapping
-    public String listarYFormulario(@RequestParam Optional<Long> id, Model model) {
+    public String listarYFormulario(
+            @RequestParam Optional<Long> id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(required = false) String search,
+            Model model) {
+        // Formulario de creación/edición
         if (id.isPresent()) {
             Optional<Usuario> usuario = usuarioServicio.obtenerPorId(id.get());
             usuario.ifPresent(value -> model.addAttribute("usuario", value));
         } else {
-            model.addAttribute("usuario", new Usuario()); // Formulario vacío para creación
+            model.addAttribute("usuario", new Usuario());
         }
-        model.addAttribute("usuarios", usuarioServicio.obtenerTodos());
-        return "usuarios"; // Vista única
+
+        // Paginación y búsqueda de usuarios
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Usuario> usuarios;
+        if (search != null && !search.isEmpty()) {
+            usuarios = usuarioServicio.buscarPorNombreOEmail(search, pageable);
+        } else {
+            usuarios = usuarioServicio.obtenerTodosPaginados(pageable);
+        }
+
+        model.addAttribute("usuarios", usuarios.getContent());
+        model.addAttribute("usuariosPage", usuarios);
+        model.addAttribute("search", search);
+
+        return "vistas/usuario/usuarios";
     }
 
     // Actualizar un usuario por su id
     @PostMapping("/actualizar/{id}")
     public String actualizarUsuario(@PathVariable Long id, @ModelAttribute Usuario usuario, Model model) {
         try {
-            usuarioServicio.actualizar(id, usuario);  // Actualizamos el usuario
-            return "redirect:/usuarios";  // Redirigimos a la lista de usuarios
+            usuarioServicio.actualizar(id, usuario);
+            return "redirect:/usuarios";
         } catch (DataIntegrityViolationException e) {
-            model.addAttribute("error", e.getMessage());  // Mostramos el error si el correo está duplicado
-            model.addAttribute("usuario", usuario);  // Retornamos el formulario con los datos del usuario
-            model.addAttribute("usuarios", usuarioServicio.obtenerTodos());
-            return "usuarios";  // Mantenemos en la misma vista
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("usuario", usuario);
+            model.addAttribute("usuarios", usuarioServicio.obtenerTodosPaginados(PageRequest.of(0, 5)).getContent());
+            return "vistas/usuario/usuarios";
         }
     }
 
     // Crear un usuario con rol
     @PostMapping("/guardar")
-    public String guardarUsuario(@ModelAttribute Usuario usuario, 
-                                 @RequestParam(required = false) String role, 
+    public String guardarUsuario(@ModelAttribute Usuario usuario,
+                                 @RequestParam(required = false) String role,
                                  Model model) {
         try {
-            // Asignar un rol por defecto si no se proporciona uno
             String roleToAssign = (role != null && !role.isEmpty()) ? role : "ROLE_CLIENTE";
-            usuarioServicio.guardar(usuario, roleToAssign); // Llamada correcta con dos argumentos
+            usuarioServicio.guardar(usuario, roleToAssign);
             return "redirect:/usuarios";
         } catch (DataIntegrityViolationException e) {
             model.addAttribute("error", "El correo electrónico ya está registrado.");
-            model.addAttribute("usuario", usuario); // Retornar al formulario con los datos del usuario
-            model.addAttribute("usuarios", usuarioServicio.obtenerTodos());
-            return "usuarios"; // Volver a la misma vista
+            model.addAttribute("usuario", usuario);
+            model.addAttribute("usuarios", usuarioServicio.obtenerTodosPaginados(PageRequest.of(0, 5)).getContent());
+            return "vistas/usuario/usuarios";
         } catch (Exception e) {
             model.addAttribute("error", "Error al guardar el usuario: " + e.getMessage());
             model.addAttribute("usuario", usuario);
-            model.addAttribute("usuarios", usuarioServicio.obtenerTodos());
-            return "usuarios";
+            model.addAttribute("usuarios", usuarioServicio.obtenerTodosPaginados(PageRequest.of(0, 5)).getContent());
+            return "vistas/usuario/usuarios";
         }
     }
 
@@ -71,6 +92,6 @@ public class UsuarioControlador {
     @GetMapping("/eliminar/{id}")
     public String eliminarUsuario(@PathVariable Long id) {
         usuarioServicio.eliminar(id);
-        return "redirect:/usuarios"; // Redirigir a la lista de usuarios después de eliminar
+        return "redirect:/usuarios";
     }
 }

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de Order Items</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" th:href="@{/admin/dashboard}">Admin Dashboard</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/clientes}">Clientes</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/usuarios}">Usuarios</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/order-items}">ordenes</a></li>
+
+                <li class="nav-item"><a class="nav-link" th:href="@{/categorias}">Categorías</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/productos}">Productos</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/ventas}">Ventas</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/compras}">Compras</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/proveedores}">Proveedores</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/vendedores}">Vendedores</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/vendedor-producto}">Vendedor Productos</a></li>
+            </ul>
+            <a class="btn btn-outline-light" th:href="@{/logout}">Cerrar Sesión</a>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        <h1>Listado de Order Items</h1>
+        <div class="mb-3">
+            <a th:href="@{/order-items/nuevo}" class="btn btn-primary">Nuevo Order Item</a>
+        </div>
+        <div th:if="${orderItems.isEmpty()}">
+            <p>No hay Order Items registrados.</p>
+        </div>
+        <table class="table table-bordered table-striped" th:unless="${orderItems.isEmpty()}">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Venta</th>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="orderItem : ${orderItems}">
+                    <td th:text="${orderItem.idPedidoArticulo}">1</td>
+                    <td th:text="${orderItem.venta?.idVenta != null} ? ${'Venta #' + orderItem.venta.idVenta} : 'N/A'">Venta</td>
+                    <td th:text="${orderItem.producto?.nombre} ?: 'N/A'">Producto</td>
+                    <td th:text="${orderItem.cantidad} ?: '0'">0</td>
+                    <td th:text="${orderItem.precio} ?: '0.00'">0.00</td>
+                    <td>
+                        <a th:href="@{|/order-items/editar/${orderItem.idPedidoArticulo}|}" class="btn btn-sm btn-warning">Editar</a>
+                        <a th:href="@{|/order-items/eliminar/${orderItem.idPedidoArticulo}|}" class="btn btn-sm btn-danger" 
+                           onclick="return confirm('¿Está seguro de eliminar este Order Item?');">Eliminar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

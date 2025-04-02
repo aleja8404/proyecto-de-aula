@@ -1,22 +1,18 @@
 package com.elingenio.Proyecto.Controller;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
 import com.elingenio.Proyecto.Modelo.Proveedor;
 import com.elingenio.Proyecto.Services.ProveedorService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/proveedores")
+@PreAuthorize("hasRole('ADMINISTRADOR')") // Restrict to Admin
 public class ProveedorController {
 
     @Autowired
@@ -24,45 +20,36 @@ public class ProveedorController {
 
     @GetMapping
     public String listarProveedores(Model model) {
-        List<Proveedor> proveedores = proveedorService.listarTodos();
-        model.addAttribute("proveedores", proveedores);
-        model.addAttribute("proveedor", new Proveedor());
-        return "proveedores";
+        model.addAttribute("proveedores", proveedorService.obtenerTodos());
+        return "vistas/proveedores/lista";
     }
 
     @GetMapping("/nuevo")
-    public String mostrarFormularioNuevo(Model model) {
+    public String mostrarFormularioNuevoProveedor(Model model) {
         model.addAttribute("proveedor", new Proveedor());
-        return "proveedores";
+        return "vistas/proveedores/formulario";
     }
 
-    @PostMapping("/guardar")
+    @PostMapping
     public String guardarProveedor(@ModelAttribute Proveedor proveedor) {
-        proveedorService.guardar(proveedor);
+        proveedorService.guardarProveedor(proveedor);
         return "redirect:/proveedores";
     }
 
     @GetMapping("/editar/{id}")
-    public String mostrarFormularioEditar(@PathVariable Long id, Model model) {
-        Optional<Proveedor> proveedorOpt = proveedorService.obtenerPorId(id);
-        if (proveedorOpt.isPresent()) {
-            model.addAttribute("proveedor", proveedorOpt.get());
-            return "proveedores";
+    public String mostrarFormularioEditarProveedor(@PathVariable Long id, Model model) {
+        Optional<Proveedor> proveedor = proveedorService.obtenerPorId(id);
+        if (proveedor.isPresent()) {
+            model.addAttribute("proveedor", proveedor.get());
+            return "vistas/proveedores/formulario";
         } else {
             return "redirect:/proveedores";
         }
     }
 
-    @PostMapping("/actualizar/{id}")
-    public String actualizarProveedor(@PathVariable Long id, @ModelAttribute Proveedor proveedor) {
-        proveedor.setId(id);
-        proveedorService.guardar(proveedor);
-        return "redirect:/proveedores";
-    }
-
     @GetMapping("/eliminar/{id}")
     public String eliminarProveedor(@PathVariable Long id) {
-        proveedorService.eliminar(id);
+        proveedorService.eliminarProveedor(id);
         return "redirect:/proveedores";
     }
 }

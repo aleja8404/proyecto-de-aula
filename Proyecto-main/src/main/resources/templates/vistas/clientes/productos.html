@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Productos Disponibles - Ferretería Online</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" th:href="@{/cliente/dashboard}">Dashboard del Cliente</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/cliente/perfil}">Perfil</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/cliente/ordenes}">Órdenes</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/cliente/productos}">Productos</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/cliente/carrito}">Carrito</a></li>
+            </ul>
+            <a class="btn btn-outline-light" th:href="@{/logout}">Cerrar Sesión</a>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        <h1>Productos Disponibles</h1>
+        <div th:if="${productos.isEmpty()}">
+            <p>No hay productos disponibles.</p>
+        </div>
+        <table class="table table-striped" th:unless="${productos.isEmpty()}">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="producto : ${productos}">
+                    <td th:text="${producto.idProducto}"></td>
+                    <td th:text="${producto.nombre}"></td>
+                    <td th:text="${producto.descripcion} ?: 'N/A'"></td>
+                    <td th:text="${producto.precio} ?: '0.00'"></td>
+                    <td th:text="${producto.stock} ?: '0'"></td>
+                    <td>
+                        <form th:action="@{/cliente/carrito/agregar}" method="post">
+                            <input type="hidden" name="productoId" th:value="${producto.idProducto}" />
+                            <input type="number" name="cantidad" min="1" th:max="${producto.stock}" value="1" class="form-control d-inline w-25" />
+                            <button type="submit" class="btn btn-primary btn-sm">Agregar al Carrito</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <footer class="text-center mt-4">
+        <p>© 2025 Ferretería Online</p>
+    </footer>
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

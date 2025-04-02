@@ -6,10 +6,13 @@ import com.elingenio.Proyecto.Repository.RolRepository;
 import com.elingenio.Proyecto.Repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +26,31 @@ public class UsuarioServicio implements UserDetailsService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
-@Autowired
+
+    @Autowired
     private RolRepository rolRepository;
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<Usuario> usuarioOpt = obtenerPorEmail(email);
+        if (usuarioOpt.isEmpty()) {
+            throw new UsernameNotFoundException("Usuario no encontrado con email: " + email);
+        }
+        Usuario usuario = usuarioOpt.get();
+        List<SimpleGrantedAuthority> authorities = usuario.getRoles().stream()
+                .map(rol -> new SimpleGrantedAuthority(rol.getNombre()))
+                .collect(Collectors.toList());
+        return new User(usuario.getEmail(), usuario.getPassword(), authorities);
+    }
+
+    public Page<Usuario> obtenerTodosPaginados(Pageable pageable) {
+        return usuarioRepository.findAll(pageable);
+    }
+
+    public Page<Usuario> buscarPorNombreOEmail(String search, Pageable pageable) {
+        return usuarioRepository.findByNombreContainingIgnoreCaseOrEmailContainingIgnoreCase(search, search, pageable);
+    }
+
     public Iterable<Usuario> obtenerTodos() {
         return usuarioRepository.findAll();
     }
@@ -37,14 +63,20 @@ public class UsuarioServicio implements UserDetailsService {
         return usuarioRepository.findByEmail(email);
     }
 
+    public Usuario guardar(Usuario usuario) {
+        Optional<Usuario> usuarioExistente = obtenerPorEmail(usuario.getEmail());
+        if (usuarioExistente.isPresent()) {
+            throw new DataIntegrityViolationException("El correo electrónico ya está registrado.");
+        }
+        return usuarioRepository.save(usuario);
+    }
+
     public Usuario guardar(Usuario usuario, String roleName) {
         Optional<Usuario> usuarioExistente = obtenerPorEmail(usuario.getEmail());
         if (usuarioExistente.isPresent()) {
             throw new DataIntegrityViolationException("El correo electrónico ya está registrado.");
         }
-        // Encriptar la contraseña
         usuario.setPassword(new BCryptPasswordEncoder().encode(usuario.getPassword()));
-        // Fetch existing role instead of creating a new one
         Optional<Rol> rol = rolRepository.findByNombre(roleName);
         if (rol.isPresent()) {
             usuario.setRoles(Collections.singletonList(rol.get()));
@@ -55,7 +87,6 @@ public class UsuarioServicio implements UserDetailsService {
     }
 
     public Usuario actualizar(Long id, Usuario usuarioNuevo) {
-        // Same as before, no role change needed here unless you want to allow role updates
         Optional<Usuario> usuarioActual = usuarioRepository.findById(id);
         if (usuarioActual.isPresent()) {
             Usuario usuario = usuarioActual.get();
@@ -80,18 +111,5 @@ public class UsuarioServicio implements UserDetailsService {
 
     public void eliminar(Long id) {
         usuarioRepository.deleteById(id);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String email) {
-        Optional<Usuario> usuarioOpt = obtenerPorEmail(email);
-        if (usuarioOpt.isEmpty()) {
-            throw new RuntimeException("Usuario no encontrado");
-        }
-        Usuario usuario = usuarioOpt.get();
-        List<SimpleGrantedAuthority> authorities = usuario.getRoles().stream()
-                .map(rol -> new SimpleGrantedAuthority(rol.getNombre()))
-                .collect(Collectors.toList());
-        return new User(usuario.getEmail(), usuario.getPassword(), authorities);
     }
 }

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - Ferretería Online</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" th:href="@{/admin/dashboard}">Admin Dashboard</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/clientes}">Clientes</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/usuarios}">Usuarios</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/order-items}">ordenes</a></li>
+
+                <li class="nav-item"><a class="nav-link" th:href="@{/categorias}">Categorías</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/productos}">Productos</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/ventas}">Ventas</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/compras}">Compras</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/proveedores}">Proveedores</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/vendedores}">Vendedores</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/vendedor-producto}">Vendedor Productos</a></li>
+            </ul>
+            <a class="btn btn-outline-light" th:href="@{/logout}">Cerrar Sesión</a>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        <h1>Bienvenido, Administrador</h1>
+        <p>Desde este panel podrás gestionar usuarios, productos, ventas, compras y más.</p>
+
+        <div class="main-content" id="mainContent">
+     
+        
+  
+            <div class="dashboard-container">
+                <!-- Key Metrics -->
+                <div class="metrics-row">
+                    <div class="metric-card">
+                        <h3>Ventas Totales</h3>
+                        <p th:text="${ventasTotal} ?: '0'"></p>
+                        <span th:text="'(' + (${ventasCrecimiento} ?: '0') + '%)'"
+                              th:classappend="${ventasCrecimiento > 0 ? 'positive' : 'negative'}"></span>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Productos</h3>
+                        <p th:text="${productosTotal} ?: '0'"></p>
+                        <span th:text="'(' + (${productosCrecimiento} ?: '0') + '%)'"
+                              th:classappend="${productosCrecimiento > 0 ? 'positive' : 'negative'}"></span>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Clientes</h3>
+                        <p th:text="${clientesTotal} ?: '0'"></p>
+                        <span th:text="'(' + (${clientesCrecimiento} ?: '0') + '%)'"
+                              th:classappend="${clientesCrecimiento > 0 ? 'positive' : 'negative'}"></span>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Usuarios</h3>
+                        <p th:text="${usuariosTotal} ?: '0'"></p>
+                        <span th:text="'(' + (${usuariosCrecimiento} ?: '0') + '%)'"
+                              th:classappend="${usuariosCrecimiento > 0 ? 'positive' : 'negative'}"></span>
+                    </div>
+                </div>
+        
+                <!-- Charts Row -->
+                <div class="charts-row">
+                    <div class="chart-card">
+                        <h3>Total de Ventas</h3>
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <div class="sub-charts">
+                            <div class="chart-section">
+                                <h3>Tráfico por Dispositivo</h3>
+                                <canvas id="trafficChart"></canvas>
+                            </div>
+                            <div class="chart-section">
+                                <h3>Estado de Cartera</h3>
+                                <canvas id="portfolioChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- Bootstrap JS y dependencias -->
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+
+<!-- Scripts -->
+<script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script th:inline="javascript">
+    $(document).ready(function() {
+        // Toggle Sidebar
+        $('#toggleSidebar').click(function() {
+            $('#sidebar').toggleClass('hidden');
+            $('#mainContent').toggleClass('expanded');
+            $(this).toggleClass('hidden');
+        });
+
+        // Sales Trend Chart (Line)
+        const salesCtx = document.getElementById('salesChart').getContext('2d');
+        new Chart(salesCtx, {
+            type: 'line',
+            data: {
+                labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Este Año',
+                    data: [120, 190, 300, 500, 200, 300],
+                    borderColor: '#E87945',
+                    backgroundColor: 'rgba(232, 121, 69, 0.2)',
+                    fill: true,
+                    tension: 0.4
+                }, {
+                    label: 'Año Pasado',
+                    data: [100, 150, 250, 400, 180, 270],
+                    borderColor: '#dc3545',
+                    borderDash: [5, 5],
+                    fill: false,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Traffic by Device (Bar Chart)
+        const trafficCtx = document.getElementById('trafficChart').getContext('2d');
+        new Chart(trafficCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Móvil', 'Escritorio', 'Tablet'],
+                datasets: [{
+                    label: 'Tráfico',
+                    data: [50, 30, 20],
+                    backgroundColor: '#E87945',
+                    borderColor: 'rgba(0, 0, 0, 0.1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Portfolio Status (Doughnut Chart)
+        const portfolioCtx = document.getElementById('portfolioChart').getContext('2d');
+        new Chart(portfolioCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Pagado', 'Pendiente', 'Vencido'],
+                datasets: [{
+                    data: [70, 20, 10],
+                    backgroundColor: ['#28a745', '#E87945', '#6c757d']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    });
+</script>
+</body>
+</html>

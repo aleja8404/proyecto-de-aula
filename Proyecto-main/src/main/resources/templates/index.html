@@ -6,25 +6,277 @@
     <title>ToolSolutions || Gestión de Inventario para Ferreterías</title>
     <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
     <link rel="stylesheet" th:href="@{/css/style.css}"/>
-</head>
-<style>
+    <link rel="preconnect" href="https://images.unsplash.com">
+    <link rel="dns-prefetch" href="https://images.unsplash.com">
+    
+    <!-- Preload critical CSS -->
+    <link rel="preload" as="style" th:href="@{/css/style.css}">
+    
+    <!-- Modern image format support -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.HTMLPictureElement) {
+            const images = document.querySelectorAll('.portfolio-item img, .img-blog img');
+            images.forEach(img => {
+                const src = img.src.replace(/\.(jpg|png)/, '.webp');
+                img.src = src;
+            });
+        }
+    });
+    </script>
 
 
-.main {
-  background-image: url('/img/2148393118.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  color: #000000;
-  text-align: center;
-  padding: 120px 20px;
-  min-height: 70vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
+</head><style>
+    /* Existing styles */
+    /* Optimized image transitions */
+    .portfolio-item {
+        transform: translate3d(0, 0, 0);
+        backface-visibility: hidden;
+        perspective: 1000px;
+        isolation: isolate;
+    }
+    
+    .portfolio-item img {
+        transform: translateZ(0);
+        transition: transform 0.15s cubic-bezier(0.22, 0.61, 0.36, 1);
+        image-rendering: -webkit-optimize-contrast;
+        content-visibility: auto;
+    }
+    
+    .portfolio-item:hover img {
+        transform: scale(1.01) translateZ(0);
+    }
 
+    /* Add to existing overlay styles */
+    .overlay {
+        will-change: opacity;
+        transition: opacity 0.15s ease;
+    }
+    .main {
+        background-image: url('/img/2148393118.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        color: #000000;
+        text-align: center;
+        padding: 120px 20px;
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Header styles */
+    .header {
+        background-color: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        padding: 15px 0;
+    }
+    
+    .menu-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .logo-container {
+        display: flex;
+        align-items: center;
+    }
+    
+    .brand-name {
+        font-weight: 700;
+        font-size: 1.5rem;
+        margin-left: 10px;
+        color: #e77547;
+    }
+    
+    .nav-principal ul {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        gap: 20px;
+    }
+    
+    .nav-principal li {
+        display: flex;
+        align-items: center;
+    }
+    
+    .nav-principal a {
+        color: #333;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+        padding: 8px 0;
+        position: relative;
+    }
+    
+    .nav-principal a:hover {
+        color: #e77547;
+    }
+    
+    .nav-principal a:after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        left: 0;
+        background-color: #e77547;
+        transition: width 0.3s;
+    }
+    
+    .nav-principal a:hover:after {
+        width: 100%;
+    }
+    
+    .nav-principal ion-icon {
+        margin-right: 5px;
+        font-size: 1.2rem;
+    }
+    
+    .auth-buttons {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .btn-login, .btn-register {
+        padding: 8px 16px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    
+    .btn-login {
+        background-color: #e77547;
+        color: white;
+    }
+    
+    .btn-register {
+        border: 2px solid #e77547;
+        color: #e77547;
+    }
+    
+    .btn-login:hover {
+        background-color: #d66c3f;
+        transform: translateY(-2px);
+    }
+    
+    .btn-register:hover {
+        background-color: #e77547;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .nav-responsive {
+        display: none;
+        font-size: 2rem;
+        cursor: pointer;
+    }
+        /* Add these styles to your existing CSS */
+        .portfolio-item {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        will-change: transform;
+        transform: translateZ(0);
+    }
+    
+    .portfolio-item img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 8px;
+        transition: transform 0.3s ease;
+        backface-visibility: hidden;
+    }
+    
+    .portfolio-item:hover img {
+        transform: scale(1.03);
+    }
+    
+    .overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 10px;
+        transform: translateY(0);
+        transition: transform 0.3s ease;
+    }
+    
+    .overlay p {
+        margin: 0;
+        font-weight: 600;
+        text-align: center;
+    }
+    
+    .portfolio-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 30px 0;
+    }
+    
+    /* Blog images */
+    .img-blog img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 8px 8px 0 0;
+    }
+    @media (max-width: 992px) {
+        .nav-principal {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+            transition: 0.5s ease-in-out;
+        }
+        
+        .nav-principal.active {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+        }
+        
+        .nav-principal ul {
+            flex-direction: column;
+        }
+        
+        .auth-buttons {
+            margin-right: 50px;
+        }
+        
+        .nav-responsive {
+            display: block;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .auth-buttons {
+            display: none;
+        }
+        
+        .nav-principal.active .auth-buttons {
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+        }
+    }
 </style>
 
 
@@ -32,10 +284,14 @@
 
 <body>
     <!-- Encabezado -->
-    <header class="header">
+       <!-- Encabezado -->
+       <header class="header">
         <div class="container">
             <div class="menu-content">
-                <img width="70" src="/img/Imagen1.jpg" alt="Logo ToolSolutions"/>
+                <div class="logo-container">
+                    <img width="70" src="/img/Imagen1.jpg" alt="Logo ToolSolutions"/>
+                    <span class="brand-name">ToolSolutions</span>
+                </div>
                 <nav class="nav-principal">
                     <ul>
                         <li>
@@ -58,11 +314,12 @@
                             <ion-icon name="mail-unread-outline"></ion-icon>
                             <a th:href="@{/contact}">Contacto</a>
                         </li>
-                        <li class="login-btn">
-                            <a th:href="@{/login}" class="btn-login">Iniciar Sesión</a>
-                        </li>
                     </ul>
                 </nav>
+                <div class="auth-buttons">
+                    <a th:href="@{/login}" class="btn-login">Iniciar Sesión</a>
+                 
+                </div>
                 <div class="nav-responsive">
                     <ion-icon name="menu"></ion-icon>
                 </div>
@@ -138,37 +395,43 @@
             </div>
             <section class="portfolio-grid">
                 <div class="portfolio-item">
-                    <img src="" alt="Taladro Eléctrico"/>
+                    <img src="https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=800&q=60&cs=tinysrgb" 
+                         alt="Taladro Eléctrico" 
+                         loading="lazy" 
+                         decoding="async"
+                         width="400" 
+                         height="250"
+                         fetchpriority="high">
                     <div class="overlay">
                         <p>Taladro Eléctrico</p>
                     </div>
                 </div>
                 <div class="portfolio-item">
-                    <img src="" alt="Llave Inglesa"/>
+                    <img src="https://images.unsplash.com/photo-1581788604067-769a11325b0d?q=80" alt="Llave Inglesa"/>
                     <div class="overlay">
                         <p>Llave Inglesa</p>
                     </div>
                 </div>
                 <div class="portfolio-item">
-                    <img src="" alt="Caja de Herramientas"/>
+                    <img src="https://images.unsplash.com/photo-1530124566582-a618bc2615dc?q=80" alt="Caja de Herramientas"/>
                     <div class="overlay">
                         <p>Caja de Herramientas</p>
                     </div>
                 </div>
                 <div class="portfolio-item">
-                    <img src="" alt="Sierra Eléctrica"/>
+                    <img src="https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80" alt="Sierra Eléctrica"/>
                     <div class="overlay">
                         <p>Sierra Eléctrica</p>
                     </div>
                 </div>
                 <div class="portfolio-item">
-                    <img src="" alt="Martillo Profesional"/>
+                    <img src="https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?q=80" alt="Martillo Profesional"/>
                     <div class="overlay">
                         <p>Martillo Profesional</p>
                     </div>
                 </div>
                 <div class="portfolio-item">
-                    <img src="" alt="Destornilladores"/>
+                    <img src="https://images.unsplash.com/photo-1591172126702-10e977784d60?q=80" alt="Destornilladores"/>
                     <div class="overlay">
                         <p>Destornilladores</p>
                     </div>
@@ -222,7 +485,7 @@
             <div class="blog-grid">
                 <div class="card-blog">
                     <div class="img-blog">
-                        <img src="" alt="Noticia 1"/>
+                        <img src="https://images.unsplash.com/photo-1590479773265-7464e5d48118?q=80" alt="Noticia 1"/>
                     </div>
                     <div class="text-blog">
                         <h4 class="title-h4">NUEVA FUNCIONALIDAD</h4>
@@ -235,7 +498,7 @@
                 </div>
                 <div class="card-blog">
                     <div class="img-blog">
-                        <img src="" alt="Noticia 2"/>
+                        <img src="https://images.unsplash.com/photo-1582457601528-849796c2fc54?q=80" alt="Noticia 2"/>
                     </div>
                     <div class="text-blog">
                         <h4 class="title-h4">EVENTO EN CARTAGENA</h4>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tus Órdenes - Ferretería Online</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" th:href="@{/cliente/dashboard}">Dashboard del Cliente</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/cliente/perfil}">Perfil</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/cliente/ordenes}">Órdenes</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/cliente/productos}">Productos</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/cliente/carrito}">Carrito</a></li>
+            </ul>
+            <a class="btn btn-outline-light" th:href="@{/logout}">Cerrar Sesión</a>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        <h1>Tus Órdenes</h1>
+        <div th:if="${ordenes.isEmpty()}">
+            <p>No tienes órdenes registradas.</p>
+        </div>
+        <table class="table table-striped" th:unless="${ordenes.isEmpty()}">
+            <thead>
+                <tr>
+                    <th>ID Orden</th>
+                    <th>Venta</th>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="orden : ${ordenes}">
+                    <td th:text="${orden.idPedidoArticulo}"></td>
+                    <td th:text="${orden.venta?.idVenta != null} ? ${'Venta #' + orden.venta.idVenta} : 'N/A'"></td>
+                    <td th:text="${orden.producto?.nombre} ?: 'N/A'"></td>
+                    <td th:text="${orden.cantidad} ?: '0'"></td>
+                    <td th:text="${orden.precio} ?: '0.00'"></td>
+                    <td th:text="${orden.venta?.fechaDelPedido != null} ? ${#temporals.format(orden.venta.fechaDelPedido, 'yyyy-MM-dd HH:mm')} : 'N/A'"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <footer class="text-center mt-4">
+        <p>© 2025 Ferretería Online</p>
+    </footer>
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

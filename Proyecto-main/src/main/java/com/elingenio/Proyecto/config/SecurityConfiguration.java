@@ -53,8 +53,10 @@ public class SecurityConfiguration {
                 response.sendRedirect("/proveedor/accesos/dashboard");
             } else if (userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_CLIENTE"))) {
                 response.sendRedirect("/cliente/dashboard");
+            } else if (userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_VENDEDOR"))) {
+                response.sendRedirect("/vendedor/dashboard");
             } else {
-                response.sendRedirect("/usuarios");
+                response.sendRedirect("/home");
             }
         };
     }
@@ -62,26 +64,35 @@ public class SecurityConfiguration {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(authorize -> authorize
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(authorize -> authorize
+                // Allow access to static resources
                 .requestMatchers("/", "/registro", "/login", "/home", "/portfolio", "/pages", "/blog", "/contact", "/test-registro").permitAll()
-                        .requestMatchers("/js/**", "/css/**", "/img/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMINISTRADOR")
-                        .requestMatchers("/proveedor/**").hasRole("PROVEEDOR")
-                        .requestMatchers("/cliente/**").hasRole("CLIENTE")
-                        .anyRequest().authenticated()
-                )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .successHandler(customSuccessHandler())
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
-                        .permitAll()
-                );
-    
+                .requestMatchers("/js/**", "/css/**", "/img/**").permitAll()
+                
+                
+                // Allow access to specific pages
+                // .requestMatchers("/login", "/register").permitAll()
+                // Restrict access to other pages based on roles
+            .requestMatchers("/", "/index", "/index.html").permitAll() 
+                .requestMatchers("/admin/**").hasRole("ADMINISTRADOR")
+                .requestMatchers("/proveedor/**").hasRole("PROVEEDOR")
+                .requestMatchers("/cliente/**").hasRole("CLIENTE")
+                .requestMatchers("/vendedor/**").hasRole("VENDEDOR")
+                .requestMatchers("/register", "/perform_register").permitAll() // Allow registration
+                .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .loginProcessingUrl("/perform_login")
+                .successHandler(customSuccessHandler())
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout")
+                .permitAll()
+            );
         return http.build();
     }
 }

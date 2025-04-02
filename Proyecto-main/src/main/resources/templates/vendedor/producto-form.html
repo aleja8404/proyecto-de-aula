@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${vendedorProducto.idVendedorProducto != null} ? 'Editar Asignación' : 'Nueva Asignación'">Formulario Producto</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 th:text="${vendedorProducto.idVendedorProducto != null} ? 'Editar Asignación de Producto' : 'Asignar Nuevo Producto'"></h1>
+        <form th:action="${vendedorProducto.idVendedorProducto != null} ? @{/vendedor/productos/actualizar/{id}(id=${vendedorProducto.idVendedorProducto})} : @{/vendedor/productos}" 
+              th:object="${vendedorProducto}" method="post">
+            <input type="hidden" th:field="*{idVendedorProducto}" th:if="${vendedorProducto.idVendedorProducto != null}" />
+            <input type="hidden" th:field="*{vendedor}" />
+            <div class="mb-3">
+                <label for="producto" class="form-label">Producto:</label>
+                <select id="producto" th:field="*{producto}" class="form-control" required="required">
+                    <option th:each="prod : ${productos}" th:value="${prod.idProducto}" th:text="${prod.nombre}"></option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="cantidad" class="form-label">Cantidad:</label>
+                <input type="number" id="cantidad" th:field="*{cantidad}" class="form-control" required="required" />
+            </div>
+            <div class="mb-3">
+                <label for="precio" class="form-label">Precio:</label>
+                <input type="number" id="precio" th:field="*{precio}" class="form-control" step="0.01" required="required" />
+            </div>
+            <button type="submit" class="btn btn-success" 
+                    th:text="${vendedorProducto.idVendedorProducto != null} ? 'Actualizar' : 'Guardar'">Guardar</button>
+            <a th:href="@{/vendedor/dashboard}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

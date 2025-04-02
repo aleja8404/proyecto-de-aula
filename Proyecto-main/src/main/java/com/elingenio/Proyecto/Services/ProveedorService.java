@@ -1,10 +1,11 @@
 package com.elingenio.Proyecto.Services;
 
 import com.elingenio.Proyecto.Modelo.Proveedor;
-import com.elingenio.Proyecto.Repository.proveedoresRepository;
+import com.elingenio.Proyecto.Modelo.Producto;
+import com.elingenio.Proyecto.Repository.ProveedorRepository;
+import com.elingenio.Proyecto.Repository.ProductoRepository; // Add this
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -12,21 +13,32 @@ import java.util.Optional;
 public class ProveedorService {
 
     @Autowired
-    private proveedoresRepository proveedorRepositorio;
+    private ProveedorRepository proveedorRepository;
 
-    public List<Proveedor> listarTodos() {
-        return proveedorRepositorio.findAll();
+    @Autowired
+    private ProductoRepository productoRepository; // Add this
+
+    public List<Proveedor> obtenerTodos() {
+        return proveedorRepository.findAll();
     }
 
     public Optional<Proveedor> obtenerPorId(Long id) {
-        return proveedorRepositorio.findById(id);
+        return proveedorRepository.findById(id);
     }
 
-    public Proveedor guardar(Proveedor proveedor) {
-        return proveedorRepositorio.save(proveedor);
+    public Optional<Proveedor> findByCorreoElectronico(String email) {
+        return proveedorRepository.findByCorreoElectronico(email);
     }
 
-    public void eliminar(Long id) {
-        proveedorRepositorio.deleteById(id);
+    public Proveedor guardarProveedor(Proveedor proveedor) {
+        return proveedorRepository.save(proveedor);
+    }
+
+    public void eliminarProveedor(Long id) {
+        proveedorRepository.deleteById(id);
+    }
+
+    public List<Producto> obtenerProductosPorProveedor(Long proveedorId) {
+        return productoRepository.findByProveedorIdProveedor(proveedorId);
     }
 }

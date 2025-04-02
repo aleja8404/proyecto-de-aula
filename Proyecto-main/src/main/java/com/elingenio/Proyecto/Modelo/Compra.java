@@ -3,31 +3,29 @@ package com.elingenio.Proyecto.Modelo;
 import jakarta.persistence.*;
 import lombok.Data;
 
-@Data
-@Entity
-@Table(name = "compras")
-public class Compra {
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
+@Entity
+@Data
+@Table(name = "compras")
+public class Compra  implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private int codigo;
-    private int cantidad;
-    private String metododepagos; // Efectivo, tarjeta, transferencia, cheque
-    private Float costounitario;
-    private double costototal;
-
-    private String nombreTitular; // Para tarjeta y transferencia
-    private String numeroCuenta;  // Para tarjeta y transferencia
-    private String cvd;           // Para tarjeta
-    private String numeroCheque;  // Para cheque
+    private Long idCompra;
 
     @ManyToOne
-    @JoinColumn(name = "proveedor_id", nullable = false)
+    @JoinColumn(name = "id_proveedor", nullable = false)
     private Proveedor proveedor;
 
     @ManyToOne
-    @JoinColumn(name = "producto_id", nullable = false)
-    private Producto producto;
+    @JoinColumn(name = "id_vendedor", nullable = false)
+    private Vendedor vendedor;
+
+    private LocalDateTime fechaDeCompra;
+    private BigDecimal importeTotal;
+
+    private LocalDateTime fechaDeCreacion;
+    private LocalDateTime fechaDeActualizacion;
 }

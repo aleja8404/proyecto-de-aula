@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Clientes</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" th:href="@{/admin/dashboard}">Admin Dashboard</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/clientes}">Clientes</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/usuarios}">Usuarios</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/order-items}">Ordenes</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/categorias}">Categorías</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/productos}">Productos</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/ventas}">Ventas</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/compras}">Compras</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/proveedores}">Proveedores</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/vendedores}">Vendedores</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/vendedor-producto}">Vendedor Productos</a></li>
+            </ul>
+            <a class="btn btn-outline-light" th:href="@{/logout}">Cerrar Sesión</a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h1>Gestión de Clientes</h1>
+
+        <!-- Formulario de búsqueda -->
+        <form th:action="@{/clientes}" method="get" class="mb-4">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="Buscar por nombre o correo" th:value="${search}" />
+                <button type="submit" class="btn btn-primary">Buscar</button>
+            </div>
+        </form>
+
+        <!-- Botón para crear nuevo cliente -->
+        <a th:href="@{/clientes/nuevo}" class="btn btn-primary mb-4">Nuevo Cliente</a>
+
+        <!-- Lista de clientes con paginación -->
+        <table class="table table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Correo Electrónico</th>
+                    <th>Teléfono</th>
+                    <th>Dirección</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="cliente : ${clientes}">
+                    <td th:text="${cliente.idCliente}"></td>
+                    <td th:text="${cliente.nombre}"></td>
+                    <td th:text="${cliente.correoElectronico}"></td>
+                    <td th:text="${cliente.telefono} ?: 'No especificado'"></td>
+                    <td th:text="${cliente.direccion} ?: 'No especificada'"></td>
+                    <td>
+                        <a th:href="@{/clientes/editar/{id}(id=${cliente.idCliente}, page=${clientesPage.number}, size=${clientesPage.size}, search=${search})}" class="btn btn-sm btn-warning">Editar</a>
+                        <a th:href="@{/clientes/eliminar/{id}(id=${cliente.idCliente})}" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar este cliente?');">Eliminar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Controles de paginación -->
+        <nav aria-label="Paginación de clientes">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${clientesPage.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{/clientes(page=${clientesPage.number - 1}, size=${clientesPage.size}, search=${search})}">Anterior</a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, clientesPage.totalPages - 1)}" th:classappend="${i == clientesPage.number} ? 'active'">
+                    <a class="page-link" th:href="@{/clientes(page=${i}, size=${clientesPage.size}, search=${search})}" th:text="${i + 1}"></a>
+                </li>
+                <li class="page-item" th:classappend="${clientesPage.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{/clientes(page=${clientesPage.number + 1}, size=${clientesPage.size}, search=${search})}">Siguiente</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

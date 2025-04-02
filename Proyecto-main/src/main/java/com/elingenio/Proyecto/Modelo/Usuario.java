@@ -2,30 +2,38 @@ package com.elingenio.Proyecto.Modelo;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 @Entity
 @Table(name = "usuarios", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
-public class Usuario {
-
+public class Usuario implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nombre")
     private String nombre;
-
-    @Column(name = "apellido")
     private String apellido;
-
     private String email;
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER) // Removed cascade = CascadeType.ALL
+    @Column(name = "creado_en")
+    private LocalDateTime creadoEn;
+
+    public LocalDateTime getCreadoEn() {
+        return creadoEn;
+    }
+
+    public void setCreadoEn(LocalDateTime creadoEn) {
+        this.creadoEn = creadoEn;
+    }
+
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "usuarios_roles",
-            joinColumns = @JoinColumn(name = "usuario_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "rol_id", referencedColumnName = "id")
+        name = "usuarios_roles",
+        joinColumns = @JoinColumn(name = "usuario_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "rol_id", referencedColumnName = "id")
     )
     private Collection<Rol> roles;
 

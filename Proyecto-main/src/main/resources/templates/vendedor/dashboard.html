@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard del Vendedor</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+    <header class="bg-primary text-white p-3">
+        <h1>Bienvenido al Dashboard del Vendedor, <span th:text="${vendedor.nombre}"></span></h1>
+    </header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" th:href="@{/vendedor/dashboard}">Inicio</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/vendedor/editar}">Editar Perfil</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/logout}">Cerrar Sesión</a></li>
+            </ul>
+        </div>
+    </nav>
+    <main class="container mt-4">
+        <!-- Account Information -->
+        <section>
+            <h2>Información de tu Cuenta</h2>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <p><strong>ID:</strong> <span th:text="${vendedor.idVendedor}"></span></p>
+                    <p><strong>Correo:</strong> <span th:text="${vendedor.correoElectronico}"></span></p>
+                    <p><strong>Teléfono:</strong> <span th:text="${vendedor.telefono} ?: 'No especificado'"></span></p>
+                    <p><strong>Dirección:</strong> <span th:text="${vendedor.direccion} ?: 'No especificada'"></span></p>
+                    <a th:href="@{/vendedor/editar}" class="btn btn-warning">Editar Perfil</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Assigned Products -->
+        <section>
+            <h2>Tus Productos Asignados</h2>
+            <div th:if="${vendedorProductos.isEmpty()}">
+                <p>No tienes productos asignados.</p>
+            </div>
+            <table class="table table-bordered table-striped" th:unless="${vendedorProductos.isEmpty()}">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID Producto</th>
+                        <th>Nombre</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="vp : ${vendedorProductos}">
+                        <td th:text="${vp.producto.idProducto}"></td>
+                        <td th:text="${vp.producto.nombre} ?: 'N/A'"></td>
+                        <td th:text="${vp.cantidad} ?: '0'"></td>
+                        <td th:text="${vp.precio} ?: '0.00'"></td>
+                        <td>
+                            <a th:href="@{|/vendedor/productos/editar/${vp.idVendedorProducto}|}" class="btn btn-sm btn-warning">Editar</a>
+                            <a th:href="@{|/vendedor/productos/eliminar/${vp.idVendedorProducto}|}" class="btn btn-sm btn-danger" 
+                               onclick="return confirm('¿Estás seguro de eliminar este producto asignado?');">Eliminar</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <a th:href="@{/vendedor/productos/nuevo}" class="btn btn-primary">Asignar Nuevo Producto</a>
+        </section>
+
+        <!-- Sales -->
+        <section>
+            <h2>Tus Ventas</h2>
+            <div th:if="${ventas.isEmpty()}">
+                <p>No tienes ventas registradas.</p>
+            </div>
+            <table class="table table-bordered table-striped" th:unless="${ventas.isEmpty()}">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID Venta</th>
+                        <th>Cliente</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Detalles</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="venta : ${ventas}">
+                        <td th:text="${venta.idVenta}"></td>
+                        <td th:text="${venta.cliente.nombre} ?: 'N/A'"></td>
+                        <td th:text="${venta.fechaDelPedido} ?: 'N/A'"></td>
+                        <td th:text="${venta.total} ?: '0.00'"></td>
+                        <td th:text="${venta.estado} ?: 'N/A'"></td>
+                        <td>
+                            <a th:href="@{|/vendedor/ventas/detalles/${venta.idVenta}|}" class="btn btn-sm btn-info">Ver Detalles</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Purchases -->
+        <section>
+            <h2>Tus Compras</h2>
+            <div th:if="${compras.isEmpty()}">
+                <p>No tienes compras registradas.</p>
+            </div>
+            <table class="table table-bordered table-striped" th:unless="${compras.isEmpty()}">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID Compra</th>
+                        <th>Proveedor</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="compra : ${compras}">
+                        <td th:text="${compra.idCompra}"></td>
+                        <td th:text="${compra.proveedor.nombre} ?: 'N/A'"></td>
+                        <td th:text="${compra.fechaDeCompra} ?: 'N/A'"></td>
+                        <td th:text="${compra.importeTotal} ?: '0.00'"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+    <footer class="text-center mt-4 p-3 bg-light">
+        <p>© 2025 Ferretería Online. Todos los derechos reservados.</p>
+    </footer>
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

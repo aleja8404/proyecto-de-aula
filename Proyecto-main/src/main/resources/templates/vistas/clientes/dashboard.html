@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard del Cliente - Ferretería Online</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" th:href="@{/cliente/dashboard}">Dashboard del Cliente</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/cliente/perfil}">Perfil</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/cliente/ordenes}">Órdenes</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/cliente/productos}">Productos</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/cliente/carrito}">Carrito</a></li>
+            </ul>
+            <a class="btn btn-outline-light" th:href="@{/logout}">Cerrar Sesión</a>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        <h1>Bienvenido, <span th:text="${cliente.nombre}"></span></h1>
+        <p>Aquí puedes ver un resumen de tu actividad reciente.</p>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <div class="card-header">Tus Datos</div>
+                    <div class="card-body">
+                        <p><strong>Nombre:</strong> <span th:text="${cliente.nombre}"></span></p>
+                        <p><strong>Email:</strong> <span th:text="${cliente.correoElectronico}"></span></p>
+                        <a th:href="@{/cliente/perfil}" class="btn btn-primary">Editar Perfil</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <div class="card-header">Órdenes Recientes</div>
+                    <div class="card-body">
+                        <p th:if="${ordenes.isEmpty()}">No tienes órdenes recientes.</p>
+                        <ul th:unless="${ordenes.isEmpty()}">
+                            <li th:each="orden : ${ordenes}">
+                                Orden #<span th:text="${orden.venta.idVenta}"></span> - 
+                                <span th:text="${orden.producto.nombre}"></span> 
+                                (Cantidad: <span th:text="${orden.cantidad}"></span>, 
+                                Precio: <span th:text="${orden.precio}"></span>)
+                            </li>
+                        </ul>
+                        <a th:href="@{/cliente/ordenes}" class="btn btn-primary">Ver Todas las Órdenes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="text-center mt-4">
+        <p>© 2025 Ferretería Online</p>
+    </footer>
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
