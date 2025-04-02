@@ -595,3 +595,7 @@ body {
       height: 180px;
   }
 }
+
+.no-scroll {
+    overflow: hidden;
+}

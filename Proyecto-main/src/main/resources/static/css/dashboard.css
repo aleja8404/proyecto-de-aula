@@ -66,3 +66,53 @@
 canvas {
     max-height: 300px;
 }
+
+/* Add media queries at end of file */
+@media (max-width: 768px) {
+    .metrics-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .metric-card {
+        width: 100%;
+        padding: 15px;
+    }
+    
+    .charts-row {
+        flex-direction: column;
+    }
+    
+    .chart-card {
+        margin-bottom: 20px;
+    }
+    
+    .sub-charts {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .navbar-nav {
+        padding-top: 10px;
+    }
+    
+    .navbar-collapse {
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 992px) {
+    .metrics-row {
+        flex-wrap: wrap;
+    }
+    
+    .metric-card {
+        flex: 1 1 45%;
+        margin-bottom: 15px;
+    }
+    
+    .chart-container {
+        position: relative;
+        height: 300px;
+    }
+}
