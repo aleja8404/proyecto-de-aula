@@ -6,9 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@EnableJpaRepositories
 @SpringBootApplication
 public class ProyectoApplication {
     public static void main(String[] args) {
