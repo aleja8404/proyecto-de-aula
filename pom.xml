@@ -77,20 +77,6 @@
     <artifactId>jquery</artifactId>
     <version>3.6.0</version>
 </dependency>
-               <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jdbc</artifactId>
-        </dependency>
-<dependency>
-    <groupId>org.webjars</groupId>
-    <artifactId>bootstrap</artifactId>
-    <version>5.3.3</version>
-</dependency>
-<dependency>
-    <groupId>org.webjars</groupId>
-    <artifactId>jquery</artifactId>
-    <version>3.6.0</version>
-</dependency>
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>bootstrap</artifactId>
@@ -141,6 +127,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>
