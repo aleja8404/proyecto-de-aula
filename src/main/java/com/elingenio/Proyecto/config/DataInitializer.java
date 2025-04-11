@@ -71,7 +71,7 @@ public class DataInitializer {
             }
             usuarioRepository.save(usuario);
             System.out.println("✅ Usuario creado con éxito: " + email + " con rol " + roleName);
-
+            
             // Crear Cliente (solo para ROLE_CLIENTE)
             if ("ROLE_CLIENTE".equals(roleName)) {
                 Optional<Cliente> clienteExistente = clienteRepository.findByCorreoElectronico(email);

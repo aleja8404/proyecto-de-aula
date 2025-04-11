@@ -20,23 +20,13 @@ public class UsuarioControlador {
     @Autowired
     private UsuarioServicio usuarioServicio;
 
-    // Mostrar todos los usuarios con paginación y búsqueda
+    // Mostrar lista de usuarios con paginación y búsqueda
     @GetMapping
-    public String listarYFormulario(
-            @RequestParam Optional<Long> id,
+    public String listarUsuarios(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(required = false) String search,
             Model model) {
-        // Formulario de creación/edición
-        if (id.isPresent()) {
-            Optional<Usuario> usuario = usuarioServicio.obtenerPorId(id.get());
-            usuario.ifPresent(value -> model.addAttribute("usuario", value));
-        } else {
-            model.addAttribute("usuario", new Usuario());
-        }
-
-        // Paginación y búsqueda de usuarios
         Pageable pageable = PageRequest.of(page, size);
         Page<Usuario> usuarios;
         if (search != null && !search.isEmpty()) {
@@ -48,11 +38,24 @@ public class UsuarioControlador {
         model.addAttribute("usuarios", usuarios.getContent());
         model.addAttribute("usuariosPage", usuarios);
         model.addAttribute("search", search);
-
-        return "vistas/usuario/usuarios";
+        return "vistas/usuario/usuarios-lista";
     }
 
-    // Actualizar un usuario por su id
+    // Mostrar formulario de creación/edición
+    @GetMapping("/formulario")
+    public String mostrarFormulario(
+            @RequestParam Optional<Long> id,
+            Model model) {
+        if (id.isPresent()) {
+            Optional<Usuario> usuario = usuarioServicio.obtenerPorId(id.get());
+            usuario.ifPresent(value -> model.addAttribute("usuario", value));
+        } else {
+            model.addAttribute("usuario", new Usuario());
+        }
+        return "vistas/usuario/usuarios-formulario";
+    }
+
+    // Actualizar un usuario
     @PostMapping("/actualizar/{id}")
     public String actualizarUsuario(@PathVariable Long id, @ModelAttribute Usuario usuario, Model model) {
         try {
@@ -61,12 +64,11 @@ public class UsuarioControlador {
         } catch (DataIntegrityViolationException e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("usuario", usuario);
-            model.addAttribute("usuarios", usuarioServicio.obtenerTodosPaginados(PageRequest.of(0, 5)).getContent());
-            return "vistas/usuario/usuarios";
+            return "vistas/usuario/usuarios-formulario";
         }
     }
 
-    // Crear un usuario con rol
+    // Guardar un nuevo usuario
     @PostMapping("/guardar")
     public String guardarUsuario(@ModelAttribute Usuario usuario,
                                  @RequestParam(required = false) String role,
@@ -78,13 +80,11 @@ public class UsuarioControlador {
         } catch (DataIntegrityViolationException e) {
             model.addAttribute("error", "El correo electrónico ya está registrado.");
             model.addAttribute("usuario", usuario);
-            model.addAttribute("usuarios", usuarioServicio.obtenerTodosPaginados(PageRequest.of(0, 5)).getContent());
-            return "vistas/usuario/usuarios";
+            return "vistas/usuario/usuarios-formulario";
         } catch (Exception e) {
             model.addAttribute("error", "Error al guardar el usuario: " + e.getMessage());
             model.addAttribute("usuario", usuario);
-            model.addAttribute("usuarios", usuarioServicio.obtenerTodosPaginados(PageRequest.of(0, 5)).getContent());
-            return "vistas/usuario/usuarios";
+            return "vistas/usuario/usuarios-formulario";
         }
     }
 

@@ -2,17 +2,15 @@ package com.elingenio.Proyecto.Controller.dashboard;
 
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
 
 @Controller
-@RequestMapping("/admin")
 public class AdminDashboardController {
 
-    @GetMapping("/dashboard")
+    @GetMapping("/admin/dashboard")
     public String dashboard(Model model) {
-        // Agregar atributos necesarios para el dashboard de administrador
-        return "admin/dashboard"; // Vista Thymeleaf para el dashboard del administrador
+        model.addAttribute("titulo", "Panel de Administración");
+        return "admin/dashboard"; // Carga el archivo src/main/resources/templates/admin/dashboard.html
     }
 }
