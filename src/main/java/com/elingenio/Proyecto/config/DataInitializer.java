@@ -1,5 +1,5 @@
+package com.elingenio.Proyecto.config;
 
-<<<<<<< HEAD
 import com.elingenio.Proyecto.Modelo.Cliente;
 import com.elingenio.Proyecto.Modelo.Rol;
 import com.elingenio.Proyecto.Modelo.Usuario;
@@ -94,5 +94,3 @@ public class DataInitializer {
         }
     }
 }
-=======
->>>>>>> a20cc2b3e116d4e73d33583163dfe8d789a2b150
