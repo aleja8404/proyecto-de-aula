@@ -56,11 +56,6 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-<dependency>
-    <groupId>com.vaadin</groupId>
-    <artifactId>vaadin-spring-boot-starter</artifactId>
-    <version>24.1.0</version>
-</dependency>
 
       <dependency>
             <groupId>nz.ac.waikato.cms.weka</groupId>
