@@ -1,4 +1,4 @@
-/*package com.elingenio.Proyecto.config;
+package com.elingenio.Proyecto.config;
 
 import com.elingenio.Proyecto.Modelo.Cliente;
 import com.elingenio.Proyecto.Modelo.Rol;
@@ -93,5 +93,4 @@ public class DataInitializer {
             System.out.println("⚠️ El usuario ya existe, no es necesario crearlo: " + email);
         }
     }
-}  
-*/
+}
